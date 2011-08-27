@@ -8,12 +8,14 @@ public class KaiLED {
 	public KaiLED(byte[] mode) {
 		bufferLen = 18; // without data!
 
-		// TODO Auto-generated constructor stub
 		if (mode != null && mode.length > 0) {
 			if (mode[0] == 0x00) {
 				// initialization
-				buffer = new byte[bufferLen + 1];
-				buffer[17] = mode[0];
+				if (mode.length == 2) {
+					buffer = new byte[bufferLen + 2];
+					buffer[17] = mode[0];
+					buffer[18] = mode[1];
+				}
 			} else if (mode[0] == 0x01) {
 				/**
 				 * Globale Farbe <br />
@@ -107,14 +109,14 @@ public class KaiLED {
 			// buffer[2] = 0x10; //length LSB
 			buffer[3] = 0x10; // frame type
 			buffer[4] = 0x01; // frame id (can be set to any number)
-			buffer[5] = 0x00;	//address
-			buffer[6] = 0x13;	//address
-			buffer[7] = (byte) 0xa2;	//address
-			buffer[8] = 0x00;	//address
-			buffer[9] = 0x40;	//address
-			buffer[10] = 0x69;	//address
-			buffer[11] = 0x6e;	//address
-			buffer[12] = (byte) 0xfd;	//address
+			buffer[5] = 0x00; // address
+			buffer[6] = 0x13; // address
+			buffer[7] = (byte) 0xa2; // address
+			buffer[8] = 0x00; // address
+			buffer[9] = 0x40; // address
+			buffer[10] = 0x69; // address
+			buffer[11] = 0x6e; // address
+			buffer[12] = (byte) 0xfd; // address
 			buffer[13] = (byte) 0xff; // net address (unknown)
 			buffer[14] = (byte) 0xfe; // net address (unknown)
 			buffer[15] = 0x00; // range (0 = unlimited)

@@ -21,11 +21,14 @@ public class GUI {
 	private static JSlider sliderG;
 	private static JSlider sliderB;
 	private static JSlider sliderSpeed;
-	
-	private static void init() {
-		core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()));
+	private static JTextField textNumberOfLEDStripes;
 
-		byte[] buffer = { 0x00 };
+	private static void init() {
+		if (core == null) {
+			core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()));
+		}
+		byte count = (byte) Integer.parseInt(textNumberOfLEDStripes.getText());
+		byte[] buffer = { 0x00, count };
 
 		core.writeToSerialPort(new KaiLED(buffer).getBuffer());
 	}
@@ -41,10 +44,10 @@ public class GUI {
 			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
 		}
 	}
-	
+
 	private static void lauflicht() {
 		byte s = (byte) sliderSpeed.getValue();
-		
+
 		s = (byte) sliderSpeed.getValue();
 		byte[] buffer = { 0x02, s };
 
@@ -143,7 +146,7 @@ public class GUI {
 		JButton btnLauflicht = new JButton("Lauflicht");
 		btnLauflicht.setBounds(7, 197, 92, 29);
 		btnLauflicht.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -154,8 +157,8 @@ public class GUI {
 
 		sliderSpeed = new JSlider();
 		sliderSpeed.setMaximum(255);
-		sliderSpeed.setMinimum(0);
-		sliderSpeed.setValue(0);
+		sliderSpeed.setMinimum(1);
+		sliderSpeed.setValue(1);
 		sliderSpeed.setBounds(146, 197, 190, 29);
 		frame.getContentPane().add(sliderSpeed);
 
@@ -164,21 +167,31 @@ public class GUI {
 		frame.getContentPane().add(lblSpeed);
 
 		textSerial = new JTextField("test");
-		textSerial.setBounds(153, 36, 134, 28);
+		textSerial.setBounds(153, 36, 92, 28);
 		frame.getContentPane().add(textSerial);
 		textSerial.setColumns(10);
 
 		textBaud = new JTextField("9600");
-		textBaud.setBounds(310, 36, 134, 28);
+		textBaud.setBounds(248, 36, 61, 28);
 		frame.getContentPane().add(textBaud);
 		textBaud.setColumns(10);
 
 		JLabel lblNewLabel = new JLabel("Serial Port");
-		lblNewLabel.setBounds(177, 8, 77, 16);
+		lblNewLabel.setBounds(153, 8, 77, 16);
 		frame.getContentPane().add(lblNewLabel);
 
 		JLabel lblBaudrate = new JLabel("Baudrate");
-		lblBaudrate.setBounds(346, 8, 61, 16);
+		lblBaudrate.setBounds(248, 8, 61, 16);
 		frame.getContentPane().add(lblBaudrate);
+
+		textNumberOfLEDStripes = new JTextField();
+		textNumberOfLEDStripes.setText("1");
+		textNumberOfLEDStripes.setBounds(323, 36, 61, 28);
+		frame.getContentPane().add(textNumberOfLEDStripes);
+		textNumberOfLEDStripes.setColumns(10);
+
+		JLabel lblAnzahlLeisten = new JLabel("Anzahl Leisten");
+		lblAnzahlLeisten.setBounds(323, 8, 100, 16);
+		frame.getContentPane().add(lblAnzahlLeisten);
 	}
 }
