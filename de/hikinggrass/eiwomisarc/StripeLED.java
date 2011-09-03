@@ -1,7 +1,5 @@
 package de.hikinggrass.eiwomisarc;
 
-import java.awt.Color;
-
 public class StripeLED {
 	private byte stripe;
 	private byte led;
