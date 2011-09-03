@@ -1,8 +1,11 @@
 package de.hikinggrass.eiwomisarc;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -11,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.JComboBox;
 
 public class GUI {
 
@@ -24,12 +28,27 @@ public class GUI {
 	private static JSlider sliderB;
 	private static JSlider sliderSpeed;
 	private static JTextField textNumberOfLEDStripes;
+	private static JSlider sliderRSingle;
+	private static JSlider sliderGSingle;
+	private static JSlider sliderBSingle;
+	private static JComboBox singleColorComboBox;
 
 	private static void init() {
+		byte count = (byte) Integer.parseInt(textNumberOfLEDStripes.getText());
+
 		if (core == null) {
 			core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()));
+			for (int i = 0; i < count * 5; i++) {
+				singleColorComboBox.addItem(new StripeLED((byte) ((i / 5) + 1), (byte) ((i % 5) + 1), (byte) 0,
+						(byte) 0, (byte) 0));
+			}
+			singleColorComboBox.setEnabled(true);
+			sliderRSingle.setEnabled(true);
+			sliderGSingle.setEnabled(true);
+			sliderBSingle.setEnabled(true);
+
 		}
-		byte count = (byte) Integer.parseInt(textNumberOfLEDStripes.getText());
+
 		byte[] buffer = { 0x00, count };
 
 		core.writeToSerialPort(new KaiLED(buffer).getBuffer());
@@ -41,6 +60,36 @@ public class GUI {
 		byte b = (byte) sliderB.getValue();
 
 		byte[] buffer = { 0x01, r, g, b };
+
+		if (core != null) {
+			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+		}
+	}
+
+	private static void singleColor() {
+		byte r = (byte) sliderRSingle.getValue();
+		byte g = (byte) sliderGSingle.getValue();
+		byte b = (byte) sliderBSingle.getValue();
+
+		byte[] buffer = new byte[singleColorComboBox.getItemCount() * 3 + 1];
+		buffer[0] = 0x04;
+		StripeLED stripeLED = (StripeLED) singleColorComboBox.getSelectedItem();
+		stripeLED.setColor(r, g, b);
+		for (int i = 0; i < singleColorComboBox.getItemCount() * 3; i++) {
+			stripeLED = (StripeLED) singleColorComboBox.getItemAt(i / 3);
+			switch (i % 3) {
+			case 0:
+				buffer[i + 1] = stripeLED.getR();
+				break;
+			case 1:
+				buffer[i + 1] = stripeLED.getG();
+				break;
+			case 2:
+				buffer[i + 1] = stripeLED.getB();
+				break;
+			}
+
+		}
 
 		if (core != null) {
 			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
@@ -94,7 +143,7 @@ public class GUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 450, 445);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -114,12 +163,36 @@ public class GUI {
 		sliderR.setValue(0);
 		sliderR.setMaximum(127);
 		sliderR.setBounds(146, 78, 190, 29);
-		sliderR.addChangeListener(new ChangeListener() {
+		sliderR.addMouseListener(new MouseListener() {
 
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
 				globalColor();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
 			}
 		});
 		frame.getContentPane().add(sliderR);
@@ -128,12 +201,36 @@ public class GUI {
 		sliderG.setMaximum(127);
 		sliderG.setValue(0);
 		sliderG.setBounds(146, 119, 190, 29);
-		sliderG.addChangeListener(new ChangeListener() {
+		sliderG.addMouseListener(new MouseListener() {
 
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
 				globalColor();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
 			}
 		});
 		frame.getContentPane().add(sliderG);
@@ -142,12 +239,36 @@ public class GUI {
 		sliderB.setValue(0);
 		sliderB.setMaximum(127);
 		sliderB.setBounds(146, 160, 190, 29);
-		sliderB.addChangeListener(new ChangeListener() {
+		sliderB.addMouseListener(new MouseListener() {
 
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
 				globalColor();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
 			}
 		});
 		frame.getContentPane().add(sliderB);
@@ -169,12 +290,36 @@ public class GUI {
 		sliderSpeed.setMinimum(1);
 		sliderSpeed.setValue(1);
 		sliderSpeed.setBounds(146, 197, 190, 29);
-		sliderSpeed.addChangeListener(new ChangeListener() {
+		sliderSpeed.addMouseListener(new MouseListener() {
 
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
 				lauflicht();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
 			}
 		});
 		frame.getContentPane().add(sliderSpeed);
@@ -227,5 +372,143 @@ public class GUI {
 		});
 		btnLauflichtDeaktivieren.setBounds(6, 229, 180, 29);
 		frame.getContentPane().add(btnLauflichtDeaktivieren);
+
+		singleColorComboBox = new JComboBox();
+		singleColorComboBox.setEnabled(false);
+		singleColorComboBox.setBounds(102, 270, 164, 27);
+		frame.getContentPane().add(singleColorComboBox);
+
+		JLabel lblNewLabel_1 = new JLabel("Einzelfarbe:");
+		lblNewLabel_1.setBounds(18, 274, 84, 16);
+		frame.getContentPane().add(lblNewLabel_1);
+
+		sliderRSingle = new JSlider();
+		sliderRSingle.setEnabled(false);
+		sliderRSingle.setValue(0);
+		sliderRSingle.setMaximum(127);
+		sliderRSingle.setBounds(146, 294, 190, 29);
+		sliderRSingle.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				singleColor();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		frame.getContentPane().add(sliderRSingle);
+
+		sliderGSingle = new JSlider();
+		sliderGSingle.setEnabled(false);
+		sliderGSingle.setValue(0);
+		sliderGSingle.setMaximum(127);
+		sliderGSingle.setBounds(146, 335, 190, 29);
+		sliderGSingle.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				singleColor();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		frame.getContentPane().add(sliderGSingle);
+
+		sliderBSingle = new JSlider();
+		sliderBSingle.setEnabled(false);
+		sliderBSingle.setValue(0);
+		sliderBSingle.setMaximum(127);
+		sliderBSingle.setBounds(146, 376, 190, 29);
+		sliderBSingle.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				singleColor();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		frame.getContentPane().add(sliderBSingle);
+
+		JLabel label = new JLabel("R");
+		label.setBounds(136, 299, 15, 16);
+		frame.getContentPane().add(label);
+
+		JLabel label_1 = new JLabel("G");
+		label_1.setBounds(136, 335, 15, 16);
+		frame.getContentPane().add(label_1);
+
+		JLabel label_2 = new JLabel("B");
+		label_2.setBounds(136, 374, 15, 16);
+		frame.getContentPane().add(label_2);
 	}
 }

@@ -78,6 +78,10 @@ public class KaiLED {
 				 * ... ... <br />
 				 * Data[60] Blau LED 20 (0..127)
 				 */
+				buffer = new byte[bufferLen + mode.length];
+				for(int i=0; i<mode.length; i++) {
+					buffer[i+17] = mode[i];
+				}
 			} else if (mode[0] == 0x05) {
 				/**
 				 * LEDs AN/AUSschalten <br />
