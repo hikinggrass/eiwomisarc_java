@@ -87,6 +87,13 @@ public class KaiLED {
 				 * Data[3] Leiste 3 (0b00000..0b11111) <br />
 				 * Data[4] Leiste 4 (0b00000..0b11111)
 				 */
+			} else if (mode[0] == 0x12) {
+				/**
+				 * Lauflicht ausschalten <br />
+				 * Data[0]
+				 */
+				buffer = new byte[bufferLen + 1];
+				buffer[17] = mode[0];
 			} else {
 				/**
 				 * Demo Modus <br />

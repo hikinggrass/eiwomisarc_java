@@ -58,6 +58,13 @@ public class GUI {
 		}
 	}
 
+	private static void deactivateLEDSequencer() {
+		byte[] buffer = { 0x12 };
+		if (core != null) {
+			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+		}
+	}
+
 	/**
 	 * Launch the application.
 	 */
@@ -108,7 +115,7 @@ public class GUI {
 		sliderR.setMaximum(127);
 		sliderR.setBounds(146, 78, 190, 29);
 		sliderR.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
@@ -122,7 +129,7 @@ public class GUI {
 		sliderG.setValue(0);
 		sliderG.setBounds(146, 119, 190, 29);
 		sliderG.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
@@ -136,7 +143,7 @@ public class GUI {
 		sliderB.setMaximum(127);
 		sliderB.setBounds(146, 160, 190, 29);
 		sliderB.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
@@ -163,7 +170,7 @@ public class GUI {
 		sliderSpeed.setValue(1);
 		sliderSpeed.setBounds(146, 197, 190, 29);
 		sliderSpeed.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
@@ -203,13 +210,22 @@ public class GUI {
 		JLabel lblAnzahlLeisten = new JLabel("Anzahl Leisten");
 		lblAnzahlLeisten.setBounds(344, 8, 100, 16);
 		frame.getContentPane().add(lblAnzahlLeisten);
-		
+
 		JLabel lblGlobaleFarbe = new JLabel("Globale Farbe:");
 		lblGlobaleFarbe.setBounds(18, 119, 95, 16);
 		frame.getContentPane().add(lblGlobaleFarbe);
-		
+
 		JLabel lblLauflicht = new JLabel("Lauflicht:");
 		lblLauflicht.setBounds(18, 197, 61, 16);
 		frame.getContentPane().add(lblLauflicht);
+
+		JButton btnLauflichtDeaktivieren = new JButton("Lauflicht deaktivieren");
+		btnLauflichtDeaktivieren.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				deactivateLEDSequencer();
+			}
+		});
+		btnLauflichtDeaktivieren.setBounds(6, 229, 180, 29);
+		frame.getContentPane().add(btnLauflichtDeaktivieren);
 	}
 }
