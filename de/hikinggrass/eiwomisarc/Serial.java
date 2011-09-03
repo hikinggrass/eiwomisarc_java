@@ -16,16 +16,20 @@ public class Serial {
 	private boolean ready = false;
 
 	/**
-	 * Loads the Mac OS X specific serial port code <br />
-	 * TODO linux & windows version!
+	 * Loads the platform specific serial port code <br />
+	 * Currently supported: Linux, Mac OS X and Windows
 	 */
 	static {
+		System.out.println("OS: " + System.getProperty("os.name"));
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			System.loadLibrary("eiwomisarc_serialOSX");
 			System.out.println("[serial] Loaded eiwomisarc_serialOSX serial port library");
-		} else if(System.getProperty("os.name").toLowerCase().equals("linux")) {
+		} else if (System.getProperty("os.name").toLowerCase().equals("linux")) {
 			System.loadLibrary("eiwomisarc_serialLinux");
 			System.out.println("loaded linux lib");
+		} else if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
+			System.loadLibrary("eiwomisarc_serialWindows");
+			System.out.println("loaded windows lib");
 		}
 	}
 
@@ -49,11 +53,12 @@ public class Serial {
 	public Serial(String serialPort, int baudRate) throws IOException {
 		this.serialPort = serialPort;
 		this.baudRate = baudRate;
-		
+
 		if (this.externOpenPort(serialPort, baudRate) == -1) {
 			throw new IOException("[serial] Serial port " + serialPort + " could not be opened");
 		} else {
-			System.out.println("[serial] Serial port " + serialPort + " successfully opened with baud rate " + baudRate);
+			System.out
+					.println("[serial] Serial port " + serialPort + " successfully opened with baud rate " + baudRate);
 			this.ready = true;
 		}
 	}
@@ -135,7 +140,7 @@ public class Serial {
 	public void test() {
 		int port = this.externOpenPort("test", 9600);
 		System.out.println("[serial] Opened Port with status: " + port);
-		System.out.println("XXX:"+externFuntion("test"));
+		System.out.println("XXX:" + externFuntion("test"));
 		byte[] buffer = { 0x01 };
 		int wrt = this.externWrite(buffer);
 		System.out.println("Wrote to port with status: " + wrt);
