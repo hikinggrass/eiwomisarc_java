@@ -141,7 +141,6 @@ public class KaiLED {
 				 */
 				buffer = new byte[bufferLen + 1];
 				buffer[17] = mode[0];
-				System.out.println("HPE" + buffer[17]);
 			} else if (mode[0] == (byte) 0xfe) {
 				/**
 				 * High Power ausschalten <br />
@@ -149,7 +148,6 @@ public class KaiLED {
 				 */
 				buffer = new byte[bufferLen + 1];
 				buffer[17] = mode[0];
-				System.out.println("HPD" + buffer[17]);
 			} else {
 				/**
 				 * Demo Modus <br />
