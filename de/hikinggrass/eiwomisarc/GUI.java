@@ -29,6 +29,8 @@ public class GUI {
 	private static JSlider sliderGSingle;
 	private static JSlider sliderBSingle;
 	private static JComboBox singleColorComboBox;
+	private static JButton btnFading;
+	private static JSlider sliderFading;
 
 	private static void init() {
 		byte count = (byte) Integer.parseInt(textNumberOfLEDStripes.getText());
@@ -49,6 +51,33 @@ public class GUI {
 		byte[] buffer = { 0x00, count };
 
 		core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+	}
+	
+	private static void demo() {
+		byte[] buffer = { (byte) 0xff };
+
+		if (core != null) {
+			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+		}
+	}
+
+	private static void fading() {
+		byte speed = (byte) sliderFading.getValue();
+
+		byte[] buffer = { 0x03, speed };
+
+		if (core != null) {
+			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+		}
+	}
+
+	private static void deactivateFading() {
+		// deactivate fading
+		byte[] buffer = { 0x13 };
+
+		if (core != null) {
+			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+		}
 	}
 
 	private static void globalColor() {
@@ -141,7 +170,7 @@ public class GUI {
 	 */
 	private void initialize() {
 		frame = new JFrame("eiwomisarc");
-		frame.setBounds(100, 100, 450, 445);
+		frame.setBounds(100, 100, 450, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -373,18 +402,18 @@ public class GUI {
 
 		singleColorComboBox = new JComboBox();
 		singleColorComboBox.setEnabled(false);
-		singleColorComboBox.setBounds(102, 270, 164, 27);
+		singleColorComboBox.setBounds(102, 337, 164, 27);
 		frame.getContentPane().add(singleColorComboBox);
 
 		JLabel lblNewLabel_1 = new JLabel("Einzelfarbe:");
-		lblNewLabel_1.setBounds(18, 274, 84, 16);
+		lblNewLabel_1.setBounds(18, 341, 84, 16);
 		frame.getContentPane().add(lblNewLabel_1);
 
 		sliderRSingle = new JSlider();
 		sliderRSingle.setEnabled(false);
 		sliderRSingle.setValue(0);
 		sliderRSingle.setMaximum(127);
-		sliderRSingle.setBounds(146, 294, 190, 29);
+		sliderRSingle.setBounds(146, 361, 190, 29);
 		sliderRSingle.addMouseListener(new MouseListener() {
 
 			@Override
@@ -423,7 +452,7 @@ public class GUI {
 		sliderGSingle.setEnabled(false);
 		sliderGSingle.setValue(0);
 		sliderGSingle.setMaximum(127);
-		sliderGSingle.setBounds(146, 335, 190, 29);
+		sliderGSingle.setBounds(146, 402, 190, 29);
 		sliderGSingle.addMouseListener(new MouseListener() {
 
 			@Override
@@ -462,7 +491,7 @@ public class GUI {
 		sliderBSingle.setEnabled(false);
 		sliderBSingle.setValue(0);
 		sliderBSingle.setMaximum(127);
-		sliderBSingle.setBounds(146, 376, 190, 29);
+		sliderBSingle.setBounds(146, 443, 190, 29);
 		sliderBSingle.addMouseListener(new MouseListener() {
 
 			@Override
@@ -498,15 +527,83 @@ public class GUI {
 		frame.getContentPane().add(sliderBSingle);
 
 		JLabel label = new JLabel("R");
-		label.setBounds(136, 299, 15, 16);
+		label.setBounds(136, 366, 15, 16);
 		frame.getContentPane().add(label);
 
 		JLabel label_1 = new JLabel("G");
-		label_1.setBounds(136, 335, 15, 16);
+		label_1.setBounds(136, 402, 15, 16);
 		frame.getContentPane().add(label_1);
 
 		JLabel label_2 = new JLabel("B");
-		label_2.setBounds(136, 374, 15, 16);
+		label_2.setBounds(136, 441, 15, 16);
 		frame.getContentPane().add(label_2);
+
+		btnFading = new JButton("Farb\u00FCberg\u00E4nge ausschalten");
+		btnFading.setBounds(6, 296, 208, 29);
+		btnFading.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				fading();
+			}
+		});
+		frame.getContentPane().add(btnFading);
+
+		sliderFading = new JSlider();
+		sliderFading.setMinimum(1);
+		sliderFading.setValue(0);
+		sliderFading.setMaximum(255);
+		sliderFading.setEnabled(false);
+		sliderFading.setBounds(225, 270, 190, 29);
+		sliderFading.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				fading();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		frame.getContentPane().add(sliderFading);
+
+		JLabel lblNewLabel_2 = new JLabel("Farb\u00FCberg\u00E4nge Geschwindigkeit:");
+		lblNewLabel_2.setBounds(16, 270, 208, 16);
+		frame.getContentPane().add(lblNewLabel_2);
+		
+		JButton btnDemoModus = new JButton("Demo Modus");
+		btnDemoModus.setBounds(327, 229, 117, 29);
+		btnDemoModus.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				demo();
+			}
+		});
+		frame.getContentPane().add(btnDemoModus);
 	}
 }

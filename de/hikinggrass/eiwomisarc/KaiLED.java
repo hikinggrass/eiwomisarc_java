@@ -58,6 +58,11 @@ public class KaiLED {
 				 * Data[1] Geschwindigkeit (1..255)
 				 */
 				if (mode.length == 2) {
+					buffer = new byte[bufferLen + 2];
+					buffer[17] = mode[0];
+					buffer[18] = mode[1];
+				}
+				if (mode.length == 2) {
 					if (mode[1] < 1) {
 						mode[1] = 1;
 					} else if (mode[1] > 255) {
@@ -79,8 +84,8 @@ public class KaiLED {
 				 * Data[60] Blau LED 20 (0..127)
 				 */
 				buffer = new byte[bufferLen + mode.length];
-				for(int i=0; i<mode.length; i++) {
-					buffer[i+17] = mode[i];
+				for (int i = 0; i < mode.length; i++) {
+					buffer[i + 17] = mode[i];
 				}
 			} else if (mode[0] == 0x05) {
 				/**
@@ -94,7 +99,14 @@ public class KaiLED {
 			} else if (mode[0] == 0x12) {
 				/**
 				 * Lauflicht ausschalten <br />
-				 * Data[0]
+				 * Data[0] 0x12
+				 */
+				buffer = new byte[bufferLen + 1];
+				buffer[17] = mode[0];
+			} else if (mode[0] == 0x13) {
+				/**
+				 * Farbübergänge ausschalten <br />
+				 * Data[0] 0x13
 				 */
 				buffer = new byte[bufferLen + 1];
 				buffer[17] = mode[0];
