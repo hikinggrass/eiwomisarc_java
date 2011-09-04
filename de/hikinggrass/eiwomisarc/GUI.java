@@ -115,6 +115,7 @@ public class GUI {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "eiwomisarc");
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -139,7 +140,7 @@ public class GUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
+		frame = new JFrame("eiwomisarc");
 		frame.setBounds(100, 100, 450, 445);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
