@@ -100,6 +100,19 @@ public class KaiLED {
 				for (int i = 0; i < mode.length; i++) {
 					buffer[i + 17] = mode[i];
 				}
+			} else if (mode[0] == 0x06) {
+				/**
+				 * Strobo anschalten <br />
+				 * Data[0] 0x06 <br />
+				 * Data[1] Anschaltdauer <br />
+				 * Data[2] Ausschaltdauer
+				 */
+				if (mode.length == 3) {
+					buffer = new byte[bufferLen + 3];
+					buffer[17] = mode[0];
+					buffer[18] = mode[1];
+					buffer[19] = mode[2];
+				}
 			} else if (mode[0] == 0x12) {
 				/**
 				 * Lauflicht ausschalten <br />
@@ -111,6 +124,13 @@ public class KaiLED {
 				/**
 				 * Farbübergänge ausschalten <br />
 				 * Data[0] 0x13
+				 */
+				buffer = new byte[bufferLen + 1];
+				buffer[17] = mode[0];
+			} else if (mode[0] == 0x16) {
+				/**
+				 * Strobo ausschalten <br />
+				 * Data[0] 0x16
 				 */
 				buffer = new byte[bufferLen + 1];
 				buffer[17] = mode[0];

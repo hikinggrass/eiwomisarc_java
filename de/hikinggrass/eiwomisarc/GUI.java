@@ -14,6 +14,7 @@ import javax.swing.JSlider;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.SwingConstants;
 
 public class GUI {
 
@@ -36,6 +37,10 @@ public class GUI {
 	private static JButton btnDeactivateLED;
 	private static JButton btnFireEffect;
 	private static boolean fireEffectEnabled;
+	private static JTextField textStroboDelay;
+	private static JTextField textStroboDuration;
+	private static JButton btnStrobo;
+	private static boolean stroboEnabled;
 
 	private static void init() {
 		byte count = (byte) Integer.parseInt(textNumberOfLEDStripes.getText());
@@ -214,12 +219,33 @@ public class GUI {
 		}
 	}
 
+	private static void strobo() {
+		if (core != null) {
+			if (fireEffectEnabled) {
+				byte[] buffer = { 0x16 };
+				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+
+				btnStrobo.setText("Strobo aktivieren");
+				fireEffectEnabled = false;
+			} else {
+				byte duration = (byte) Integer.parseInt(textStroboDuration.getText());
+				byte delay = (byte) Integer.parseInt(textStroboDelay.getText());
+				byte[] buffer = { 0x06, duration, delay };
+				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+
+				btnStrobo.setText("Strobo deaktivieren");
+				fireEffectEnabled = true;
+			}
+		}
+	}
+
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "eiwomisarc");
 		fireEffectEnabled = false;
+		stroboEnabled = false;
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -244,7 +270,7 @@ public class GUI {
 	 */
 	private void initialize() {
 		frame = new JFrame("eiwomisarc");
-		frame.setBounds(100, 100, 480, 500);
+		frame.setBounds(100, 100, 480, 550);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -476,7 +502,7 @@ public class GUI {
 
 		singleColorComboBox = new JComboBox();
 		singleColorComboBox.setEnabled(false);
-		singleColorComboBox.setBounds(102, 337, 164, 27);
+		singleColorComboBox.setBounds(102, 387, 164, 27);
 		singleColorComboBox.addItemListener(new ItemListener() {
 
 			@Override
@@ -488,14 +514,14 @@ public class GUI {
 		frame.getContentPane().add(singleColorComboBox);
 
 		JLabel lblNewLabel_1 = new JLabel("Einzelfarbe:");
-		lblNewLabel_1.setBounds(18, 341, 84, 16);
+		lblNewLabel_1.setBounds(18, 391, 84, 16);
 		frame.getContentPane().add(lblNewLabel_1);
 
 		sliderRSingle = new JSlider();
 		sliderRSingle.setEnabled(false);
 		sliderRSingle.setValue(0);
 		sliderRSingle.setMaximum(127);
-		sliderRSingle.setBounds(28, 361, 190, 29);
+		sliderRSingle.setBounds(28, 411, 190, 29);
 		sliderRSingle.addMouseListener(new MouseListener() {
 
 			@Override
@@ -534,7 +560,7 @@ public class GUI {
 		sliderGSingle.setEnabled(false);
 		sliderGSingle.setValue(0);
 		sliderGSingle.setMaximum(127);
-		sliderGSingle.setBounds(28, 402, 190, 29);
+		sliderGSingle.setBounds(28, 452, 190, 29);
 		sliderGSingle.addMouseListener(new MouseListener() {
 
 			@Override
@@ -573,7 +599,7 @@ public class GUI {
 		sliderBSingle.setEnabled(false);
 		sliderBSingle.setValue(0);
 		sliderBSingle.setMaximum(127);
-		sliderBSingle.setBounds(28, 443, 190, 29);
+		sliderBSingle.setBounds(28, 493, 190, 29);
 		sliderBSingle.addMouseListener(new MouseListener() {
 
 			@Override
@@ -609,19 +635,19 @@ public class GUI {
 		frame.getContentPane().add(sliderBSingle);
 
 		JLabel label = new JLabel("R");
-		label.setBounds(18, 366, 15, 16);
+		label.setBounds(18, 416, 15, 16);
 		frame.getContentPane().add(label);
 
 		JLabel label_1 = new JLabel("G");
-		label_1.setBounds(18, 402, 15, 16);
+		label_1.setBounds(18, 452, 15, 16);
 		frame.getContentPane().add(label_1);
 
 		JLabel label_2 = new JLabel("B");
-		label_2.setBounds(18, 441, 15, 16);
+		label_2.setBounds(18, 491, 15, 16);
 		frame.getContentPane().add(label_2);
 
 		btnFading = new JButton("Farb\u00FCberg\u00E4nge ausschalten");
-		btnFading.setBounds(6, 296, 208, 29);
+		btnFading.setBounds(6, 346, 208, 29);
 		btnFading.addActionListener(new ActionListener() {
 
 			@Override
@@ -637,7 +663,7 @@ public class GUI {
 		sliderFading.setValue(0);
 		sliderFading.setMaximum(255);
 		sliderFading.setEnabled(false);
-		sliderFading.setBounds(225, 270, 190, 29);
+		sliderFading.setBounds(225, 320, 190, 29);
 		sliderFading.addMouseListener(new MouseListener() {
 
 			@Override
@@ -673,7 +699,7 @@ public class GUI {
 		frame.getContentPane().add(sliderFading);
 
 		JLabel lblNewLabel_2 = new JLabel("Farb\u00FCberg\u00E4nge Geschwindigkeit:");
-		lblNewLabel_2.setBounds(16, 270, 208, 16);
+		lblNewLabel_2.setBounds(16, 320, 208, 16);
 		frame.getContentPane().add(lblNewLabel_2);
 
 		JButton btnDemoModus = new JButton("Demo Modus");
@@ -690,7 +716,7 @@ public class GUI {
 
 		btnDeactivateLED = new JButton("LED deaktivieren");
 		btnDeactivateLED.setEnabled(false);
-		btnDeactivateLED.setBounds(212, 361, 226, 29);
+		btnDeactivateLED.setBounds(212, 411, 226, 29);
 		btnDeactivateLED.addActionListener(new ActionListener() {
 
 			@Override
@@ -712,5 +738,44 @@ public class GUI {
 			}
 		});
 		frame.getContentPane().add(btnFireEffect);
+
+		btnStrobo = new JButton("Strobo aktivieren");
+		btnStrobo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				strobo();
+			}
+		});
+		btnStrobo.setBounds(6, 270, 153, 29);
+		frame.getContentPane().add(btnStrobo);
+
+		JLabel lblStroboDelay = new JLabel("Strobo Delay:");
+		lblStroboDelay.setBounds(176, 275, 84, 16);
+		frame.getContentPane().add(lblStroboDelay);
+
+		JLabel lblStroboDauer = new JLabel("Strobo Dauer:");
+		lblStroboDauer.setBounds(325, 275, 91, 16);
+		frame.getContentPane().add(lblStroboDauer);
+
+		JLabel lblMs = new JLabel("ms");
+		lblMs.setBounds(294, 275, 19, 16);
+		frame.getContentPane().add(lblMs);
+
+		JLabel label_3 = new JLabel("ms");
+		label_3.setBounds(445, 275, 19, 16);
+		frame.getContentPane().add(label_3);
+
+		textStroboDelay = new JTextField();
+		textStroboDelay.setHorizontalAlignment(SwingConstants.RIGHT);
+		textStroboDelay.setText("5");
+		textStroboDelay.setBounds(263, 270, 33, 28);
+		frame.getContentPane().add(textStroboDelay);
+		textStroboDelay.setColumns(10);
+
+		textStroboDuration = new JTextField();
+		textStroboDuration.setText("5");
+		textStroboDuration.setHorizontalAlignment(SwingConstants.RIGHT);
+		textStroboDuration.setBounds(413, 270, 33, 28);
+		frame.getContentPane().add(textStroboDuration);
+		textStroboDuration.setColumns(10);
 	}
 }
