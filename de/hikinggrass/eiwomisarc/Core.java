@@ -136,4 +136,11 @@ public class Core {
 			return false;
 		}
 	}
+
+	public void closeSerialPort() {
+		if (this.serialPort != null) {
+			this.serialPort.closeSerialPort();
+			System.out.println("[serial] Serial port " + serialPort.getSerialPort() + " successfully closed");
+		}
+	}
 }

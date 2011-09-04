@@ -3,6 +3,8 @@ package de.hikinggrass.eiwomisarc;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -36,19 +38,24 @@ public class GUI {
 	private static void init() {
 		byte count = (byte) Integer.parseInt(textNumberOfLEDStripes.getText());
 
-		if (core == null) {
-			core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()));
-			for (int i = 0; i < count * 5; i++) {
-				singleColorComboBox.addItem(new StripeLED((byte) ((i / 5) + 1), (byte) ((i % 5) + 1), (byte) 0,
-						(byte) 0, (byte) 0, true));
+		if (core != null) {
+			core.closeSerialPort();
+			if (singleColorComboBox != null) {
+				singleColorComboBox.removeAllItems();
 			}
-			singleColorComboBox.setEnabled(true);
-			sliderRSingle.setEnabled(true);
-			sliderGSingle.setEnabled(true);
-			sliderBSingle.setEnabled(true);
-			btnDeactivateLED.setEnabled(true);
-
 		}
+
+		core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()));
+		for (int i = 0; i < count * 5; i++) {
+			singleColorComboBox.addItem(new StripeLED((byte) ((i / 5) + 1), (byte) ((i % 5) + 1), (byte) 0, (byte) 0,
+					(byte) 0, true));
+		}
+		singleColorComboBox.setEnabled(true);
+		sliderRSingle.setEnabled(true);
+		sliderGSingle.setEnabled(true);
+		sliderBSingle.setEnabled(true);
+		btnDeactivateLED.setEnabled(true);
+		sliderFading.setEnabled(true);
 
 		byte[] buffer = { 0x00, count };
 
@@ -96,11 +103,13 @@ public class GUI {
 
 	private static void ledSelected() {
 		StripeLED stripeLED = (StripeLED) singleColorComboBox.getSelectedItem();
-		String btnText = stripeLED.toString();
-		if (stripeLED.isActivated()) {
-			btnDeactivateLED.setText(btnText + " deaktivieren");
-		} else {
-			btnDeactivateLED.setText(btnText + " aktivieren");
+		if (stripeLED != null) {
+			String btnText = stripeLED.toString();
+			if (stripeLED.isActivated()) {
+				btnDeactivateLED.setText(btnText + " deaktivieren");
+			} else {
+				btnDeactivateLED.setText(btnText + " aktivieren");
+			}
 		}
 	}
 
@@ -452,10 +461,10 @@ public class GUI {
 		singleColorComboBox = new JComboBox();
 		singleColorComboBox.setEnabled(false);
 		singleColorComboBox.setBounds(102, 337, 164, 27);
-		singleColorComboBox.addActionListener(new ActionListener() {
+		singleColorComboBox.addItemListener(new ItemListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				// TODO Auto-generated method stub
 				ledSelected();
 			}
