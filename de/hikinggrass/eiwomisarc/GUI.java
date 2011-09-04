@@ -41,6 +41,8 @@ public class GUI {
 	private static JTextField textStroboDuration;
 	private static JButton btnStrobo;
 	private static boolean stroboEnabled;
+	private static JButton btnHighPower;
+	private static boolean highPowerEnabled;
 
 	private static void init() {
 		byte count = (byte) Integer.parseInt(textNumberOfLEDStripes.getText());
@@ -221,12 +223,12 @@ public class GUI {
 
 	private static void strobo() {
 		if (core != null) {
-			if (fireEffectEnabled) {
+			if (stroboEnabled) {
 				byte[] buffer = { 0x16 };
 				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
 
 				btnStrobo.setText("Strobo aktivieren");
-				fireEffectEnabled = false;
+				stroboEnabled = false;
 			} else {
 				byte duration = (byte) Integer.parseInt(textStroboDuration.getText());
 				byte delay = (byte) Integer.parseInt(textStroboDelay.getText());
@@ -234,7 +236,25 @@ public class GUI {
 				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
 
 				btnStrobo.setText("Strobo deaktivieren");
-				fireEffectEnabled = true;
+				stroboEnabled = true;
+			}
+		}
+	}
+
+	private static void highPower() {
+		if (core != null) {
+			if (highPowerEnabled) {
+				byte[] buffer = { (byte) 0xfe };
+				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+
+				btnHighPower.setText("High Power Modus aktivieren");
+				highPowerEnabled = false;
+			} else {
+				byte[] buffer = { (byte) 0xfd };
+				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+
+				btnHighPower.setText("High Power Modus deaktivieren");
+				highPowerEnabled = true;
 			}
 		}
 	}
@@ -246,6 +266,7 @@ public class GUI {
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "eiwomisarc");
 		fireEffectEnabled = false;
 		stroboEnabled = false;
+		highPowerEnabled = false;
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -289,7 +310,7 @@ public class GUI {
 		sliderR = new JSlider();
 		sliderR.setValue(0);
 		sliderR.setMaximum(127);
-		sliderR.setBounds(146, 78, 190, 29);
+		sliderR.setBounds(146, 95, 190, 29);
 		sliderR.addMouseListener(new MouseListener() {
 
 			@Override
@@ -327,7 +348,7 @@ public class GUI {
 		sliderG = new JSlider();
 		sliderG.setMaximum(127);
 		sliderG.setValue(0);
-		sliderG.setBounds(146, 119, 190, 29);
+		sliderG.setBounds(146, 136, 190, 29);
 		sliderG.addMouseListener(new MouseListener() {
 
 			@Override
@@ -365,7 +386,7 @@ public class GUI {
 		sliderB = new JSlider();
 		sliderB.setValue(0);
 		sliderB.setMaximum(127);
-		sliderB.setBounds(146, 160, 190, 29);
+		sliderB.setBounds(146, 177, 190, 29);
 		sliderB.addMouseListener(new MouseListener() {
 
 			@Override
@@ -401,22 +422,22 @@ public class GUI {
 		frame.getContentPane().add(sliderB);
 
 		JLabel lblR = new JLabel("R");
-		lblR.setBounds(136, 83, 15, 16);
+		lblR.setBounds(136, 100, 15, 16);
 		frame.getContentPane().add(lblR);
 
 		JLabel lblG = new JLabel("G");
-		lblG.setBounds(136, 119, 15, 16);
+		lblG.setBounds(136, 136, 15, 16);
 		frame.getContentPane().add(lblG);
 
 		JLabel lblB = new JLabel("B");
-		lblB.setBounds(136, 158, 15, 16);
+		lblB.setBounds(136, 175, 15, 16);
 		frame.getContentPane().add(lblB);
 
 		sliderSpeed = new JSlider();
 		sliderSpeed.setMaximum(255);
 		sliderSpeed.setMinimum(1);
 		sliderSpeed.setValue(1);
-		sliderSpeed.setBounds(146, 197, 190, 29);
+		sliderSpeed.setBounds(146, 214, 190, 29);
 		sliderSpeed.addMouseListener(new MouseListener() {
 
 			@Override
@@ -452,7 +473,7 @@ public class GUI {
 		frame.getContentPane().add(sliderSpeed);
 
 		JLabel lblSpeed = new JLabel("Speed");
-		lblSpeed.setBounds(111, 201, 48, 16);
+		lblSpeed.setBounds(111, 218, 48, 16);
 		frame.getContentPane().add(lblSpeed);
 
 		textSerial = new JTextField("/dev/ttyUSB0");
@@ -484,11 +505,11 @@ public class GUI {
 		frame.getContentPane().add(lblAnzahlLeisten);
 
 		JLabel lblGlobaleFarbe = new JLabel("Globale Farbe:");
-		lblGlobaleFarbe.setBounds(18, 119, 95, 16);
+		lblGlobaleFarbe.setBounds(18, 136, 95, 16);
 		frame.getContentPane().add(lblGlobaleFarbe);
 
 		JLabel lblLauflicht = new JLabel("Lauflicht:");
-		lblLauflicht.setBounds(18, 197, 61, 16);
+		lblLauflicht.setBounds(18, 214, 61, 16);
 		frame.getContentPane().add(lblLauflicht);
 
 		JButton btnLauflichtDeaktivieren = new JButton("Lauflicht deaktivieren");
@@ -497,7 +518,7 @@ public class GUI {
 				deactivateLEDSequencer();
 			}
 		});
-		btnLauflichtDeaktivieren.setBounds(6, 229, 164, 29);
+		btnLauflichtDeaktivieren.setBounds(6, 246, 164, 29);
 		frame.getContentPane().add(btnLauflichtDeaktivieren);
 
 		singleColorComboBox = new JComboBox();
@@ -703,7 +724,7 @@ public class GUI {
 		frame.getContentPane().add(lblNewLabel_2);
 
 		JButton btnDemoModus = new JButton("Demo Modus");
-		btnDemoModus.setBounds(364, 229, 110, 29);
+		btnDemoModus.setBounds(364, 246, 110, 29);
 		btnDemoModus.addActionListener(new ActionListener() {
 
 			@Override
@@ -728,7 +749,7 @@ public class GUI {
 		frame.getContentPane().add(btnDeactivateLED);
 
 		btnFireEffect = new JButton("Feuer Effekt aktivieren");
-		btnFireEffect.setBounds(166, 229, 200, 29);
+		btnFireEffect.setBounds(166, 246, 200, 29);
 		btnFireEffect.addActionListener(new ActionListener() {
 
 			@Override
@@ -745,37 +766,46 @@ public class GUI {
 				strobo();
 			}
 		});
-		btnStrobo.setBounds(6, 270, 153, 29);
+		btnStrobo.setBounds(6, 279, 153, 29);
 		frame.getContentPane().add(btnStrobo);
 
 		JLabel lblStroboDelay = new JLabel("Strobo Delay:");
-		lblStroboDelay.setBounds(176, 275, 84, 16);
+		lblStroboDelay.setBounds(176, 284, 84, 16);
 		frame.getContentPane().add(lblStroboDelay);
 
 		JLabel lblStroboDauer = new JLabel("Strobo Dauer:");
-		lblStroboDauer.setBounds(325, 275, 91, 16);
+		lblStroboDauer.setBounds(325, 284, 91, 16);
 		frame.getContentPane().add(lblStroboDauer);
 
 		JLabel lblMs = new JLabel("ms");
-		lblMs.setBounds(294, 275, 19, 16);
+		lblMs.setBounds(294, 284, 19, 16);
 		frame.getContentPane().add(lblMs);
 
 		JLabel label_3 = new JLabel("ms");
-		label_3.setBounds(445, 275, 19, 16);
+		label_3.setBounds(445, 284, 19, 16);
 		frame.getContentPane().add(label_3);
 
 		textStroboDelay = new JTextField();
 		textStroboDelay.setHorizontalAlignment(SwingConstants.RIGHT);
 		textStroboDelay.setText("5");
-		textStroboDelay.setBounds(263, 270, 33, 28);
+		textStroboDelay.setBounds(263, 279, 33, 28);
 		frame.getContentPane().add(textStroboDelay);
 		textStroboDelay.setColumns(10);
 
 		textStroboDuration = new JTextField();
 		textStroboDuration.setText("5");
 		textStroboDuration.setHorizontalAlignment(SwingConstants.RIGHT);
-		textStroboDuration.setBounds(413, 270, 33, 28);
+		textStroboDuration.setBounds(413, 279, 33, 28);
 		frame.getContentPane().add(textStroboDuration);
 		textStroboDuration.setColumns(10);
+
+		btnHighPower = new JButton("High Power Modus aktivieren");
+		btnHighPower.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				highPower();
+			}
+		});
+		btnHighPower.setBounds(6, 65, 226, 29);
+		frame.getContentPane().add(btnHighPower);
 	}
 }
