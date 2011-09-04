@@ -31,6 +31,7 @@ public class GUI {
 	private static JComboBox singleColorComboBox;
 	private static JButton btnFading;
 	private static JSlider sliderFading;
+	private static JButton btnDeactivateLED;
 
 	private static void init() {
 		byte count = (byte) Integer.parseInt(textNumberOfLEDStripes.getText());
@@ -39,12 +40,13 @@ public class GUI {
 			core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()));
 			for (int i = 0; i < count * 5; i++) {
 				singleColorComboBox.addItem(new StripeLED((byte) ((i / 5) + 1), (byte) ((i % 5) + 1), (byte) 0,
-						(byte) 0, (byte) 0,true));
+						(byte) 0, (byte) 0, true));
 			}
 			singleColorComboBox.setEnabled(true);
 			sliderRSingle.setEnabled(true);
 			sliderGSingle.setEnabled(true);
 			sliderBSingle.setEnabled(true);
+			btnDeactivateLED.setEnabled(true);
 
 		}
 
@@ -52,7 +54,7 @@ public class GUI {
 
 		core.writeToSerialPort(new KaiLED(buffer).getBuffer());
 	}
-	
+
 	private static void demo() {
 		byte[] buffer = { (byte) 0xff };
 
@@ -90,6 +92,53 @@ public class GUI {
 		if (core != null) {
 			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
 		}
+	}
+
+	private static void ledSelected() {
+		StripeLED stripeLED = (StripeLED) singleColorComboBox.getSelectedItem();
+		String btnText = stripeLED.toString();
+		if (stripeLED.isActivated()) {
+			btnDeactivateLED.setText(btnText + " deaktivieren");
+		} else {
+			btnDeactivateLED.setText(btnText + " aktivieren");
+		}
+	}
+
+	private static void changeLEDState() {
+		StripeLED stripeLED = (StripeLED) singleColorComboBox.getSelectedItem();
+		if (stripeLED.isActivated()) {
+			// disable LED
+			stripeLED.setActivated(false);
+
+		} else {
+			// enable LED
+			stripeLED.setActivated(true);
+
+		}
+		if (singleColorComboBox.getItemCount() >= 5) {
+			String[] states = new String[singleColorComboBox.getItemCount() / 5];
+			for (int i = 0; i < states.length; i++) {
+				states[i] = "";
+			}
+			for (int i = 0; i < singleColorComboBox.getItemCount(); i++) {
+				stripeLED = (StripeLED) singleColorComboBox.getItemAt(i);
+				if (stripeLED.isActivated()) {
+					states[i / 5] += "1";
+				} else {
+					states[i / 5] += "0";
+				}
+			}
+			byte[] buffer = new byte[states.length + 1];
+			buffer[0] = 0x05;
+			for (int i = 0; i < states.length; i++) {
+				buffer[i + 1] = (byte) Integer.parseInt(states[i], 2);
+			}
+			if (core != null) {
+				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+			}
+		}
+
+		ledSelected();
 	}
 
 	private static void singleColor() {
@@ -403,6 +452,14 @@ public class GUI {
 		singleColorComboBox = new JComboBox();
 		singleColorComboBox.setEnabled(false);
 		singleColorComboBox.setBounds(102, 337, 164, 27);
+		singleColorComboBox.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				ledSelected();
+			}
+		});
 		frame.getContentPane().add(singleColorComboBox);
 
 		JLabel lblNewLabel_1 = new JLabel("Einzelfarbe:");
@@ -593,11 +650,11 @@ public class GUI {
 		JLabel lblNewLabel_2 = new JLabel("Farb\u00FCberg\u00E4nge Geschwindigkeit:");
 		lblNewLabel_2.setBounds(16, 270, 208, 16);
 		frame.getContentPane().add(lblNewLabel_2);
-		
+
 		JButton btnDemoModus = new JButton("Demo Modus");
 		btnDemoModus.setBounds(327, 229, 117, 29);
 		btnDemoModus.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -605,9 +662,18 @@ public class GUI {
 			}
 		});
 		frame.getContentPane().add(btnDemoModus);
-		
-		JButton btnNewButton = new JButton("LED deaktivieren");
-		btnNewButton.setBounds(230, 361, 149, 29);
-		frame.getContentPane().add(btnNewButton);
+
+		btnDeactivateLED = new JButton("LED deaktivieren");
+		btnDeactivateLED.setEnabled(false);
+		btnDeactivateLED.setBounds(212, 361, 226, 29);
+		btnDeactivateLED.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				changeLEDState();
+			}
+		});
+		frame.getContentPane().add(btnDeactivateLED);
 	}
 }
