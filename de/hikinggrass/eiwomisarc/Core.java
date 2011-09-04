@@ -1,6 +1,7 @@
 package de.hikinggrass.eiwomisarc;
 
 import java.io.IOException;
+import java.util.Timer;
 
 /**
  * This Class represents the Core of the Application, it handles input from the shell, the network interface and
@@ -21,6 +22,8 @@ public class Core {
 
 	private Settings settings;
 
+	private Timer fireTimer;
+
 	/**
 	 * Constructs a new Core
 	 */
@@ -32,6 +35,7 @@ public class Core {
 		try {
 			this.serialPort = new Serial(serialPort, baudRate);
 			System.out.println("connect to serial port");
+			this.fireTimer = new Timer();
 		} catch (IOException e) {
 			System.out.println("could not connect to serial port");
 		}
@@ -142,5 +146,15 @@ public class Core {
 			this.serialPort.closeSerialPort();
 			System.out.println("[serial] Serial port " + serialPort.getSerialPort() + " successfully closed");
 		}
+	}
+
+	public void startFireTimer(int time) {
+		fireTimer = new Timer();
+		// nach 1 Sek geht’s los und dann alle 5 Sekunden
+		fireTimer.schedule(new FireEffect(this), 0, time);
+	}
+
+	public void stopFireTimer() {
+		fireTimer.cancel();
 	}
 }

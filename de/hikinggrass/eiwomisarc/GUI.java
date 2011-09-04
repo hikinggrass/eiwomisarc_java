@@ -34,6 +34,8 @@ public class GUI {
 	private static JButton btnFading;
 	private static JSlider sliderFading;
 	private static JButton btnDeactivateLED;
+	private static JButton btnFireEffect;
+	private static boolean fireEffectEnabled;
 
 	private static void init() {
 		byte count = (byte) Integer.parseInt(textNumberOfLEDStripes.getText());
@@ -198,12 +200,26 @@ public class GUI {
 		}
 	}
 
+	private static void fireEffect() {
+		if (core != null) {
+			if (fireEffectEnabled) {
+				core.stopFireTimer();
+				btnFireEffect.setText("Feuereffekt aktivieren");
+				fireEffectEnabled = false;
+			} else {
+				core.startFireTimer(100);
+				btnFireEffect.setText("Feuereffekt deaktivieren");
+				fireEffectEnabled = true;
+			}
+		}
+	}
+
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "eiwomisarc");
-
+		fireEffectEnabled = false;
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -228,7 +244,7 @@ public class GUI {
 	 */
 	private void initialize() {
 		frame = new JFrame("eiwomisarc");
-		frame.setBounds(100, 100, 450, 500);
+		frame.setBounds(100, 100, 480, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -455,7 +471,7 @@ public class GUI {
 				deactivateLEDSequencer();
 			}
 		});
-		btnLauflichtDeaktivieren.setBounds(6, 229, 180, 29);
+		btnLauflichtDeaktivieren.setBounds(6, 229, 164, 29);
 		frame.getContentPane().add(btnLauflichtDeaktivieren);
 
 		singleColorComboBox = new JComboBox();
@@ -661,7 +677,7 @@ public class GUI {
 		frame.getContentPane().add(lblNewLabel_2);
 
 		JButton btnDemoModus = new JButton("Demo Modus");
-		btnDemoModus.setBounds(327, 229, 117, 29);
+		btnDemoModus.setBounds(364, 229, 110, 29);
 		btnDemoModus.addActionListener(new ActionListener() {
 
 			@Override
@@ -684,5 +700,17 @@ public class GUI {
 			}
 		});
 		frame.getContentPane().add(btnDeactivateLED);
+
+		btnFireEffect = new JButton("Feuer Effekt aktivieren");
+		btnFireEffect.setBounds(166, 229, 200, 29);
+		btnFireEffect.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				fireEffect();
+			}
+		});
+		frame.getContentPane().add(btnFireEffect);
 	}
 }
