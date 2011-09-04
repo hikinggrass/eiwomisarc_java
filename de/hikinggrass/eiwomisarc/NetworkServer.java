@@ -9,17 +9,17 @@ import java.io.IOException;
  * @author Kai Hermann
  * @version 0.1
  */
-public class Network {
+public class NetworkServer {
 	private Core core;
 
-	public Network(Core core) {
+	public NetworkServer(Core core) {
 		this.core = core;
 		try {
 			new NetworkServerThread(this.core).start();
-			Core.debugMessage("[net] Listening on port" + core.getSettingsNetwork().getPort());
+			// Core.debugMessage("[net] Listening on port" + core.getSettingsNetwork().getPort());
 		} catch (IOException e) {
-			Core.errorMessage("[net] Coudn't listen on port " + core.getSettingsNetwork().getPort() + ": "
-					+ e.getMessage());
+			// Core.errorMessage("[net] Coudn't listen on port " + core.getSettingsNetwork().getPort() + ": "
+			// + e.getMessage());
 		}
 	}
 

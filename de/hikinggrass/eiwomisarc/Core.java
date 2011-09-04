@@ -1,6 +1,8 @@
 package de.hikinggrass.eiwomisarc;
 
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Timer;
 
 /**
@@ -17,7 +19,8 @@ public class Core {
 	private static final int DEBUG = 2;
 	private static int messageLevel;
 
-	private Network network;
+	private NetworkServer networkServer;
+	private NetworkClient networkClient;
 	private Serial serialPort;
 
 	private Settings settings;
@@ -32,6 +35,16 @@ public class Core {
 	}
 
 	public Core(String serialPort, int baudRate) {
+		this.networkServer = new NetworkServer(this);
+		try {
+			this.networkClient = new NetworkClient("127.0.0.1", 1337);
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try {
 			this.serialPort = new Serial(serialPort, baudRate);
 			System.out.println("connect to serial port");
@@ -54,7 +67,7 @@ public class Core {
 			debugMessage(string);
 		}
 
-		this.network = new Network(this);
+		this.networkServer = new NetworkServer(this);
 		try {
 			this.serialPort = new Serial(settings.getSerialPort(), settings.getBaudRate());
 		} catch (IOException e) {
@@ -155,5 +168,9 @@ public class Core {
 
 	public void stopFireTimer() {
 		fireTimer.cancel();
+	}
+
+	public void sendPacket(byte[] buffer) {
+		this.networkClient.sendPacket(buffer);
 	}
 }

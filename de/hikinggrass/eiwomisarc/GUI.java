@@ -807,5 +807,16 @@ public class GUI {
 		});
 		btnHighPower.setBounds(6, 65, 226, 29);
 		frame.getContentPane().add(btnHighPower);
+
+		JButton btnTestNetwork = new JButton("Test Network");
+		btnTestNetwork.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				byte[] buffer = { 0x00, 9 };
+
+				core.sendPacket(new KaiLED(buffer).getBuffer());
+			}
+		});
+		btnTestNetwork.setBounds(249, 65, 117, 29);
+		frame.getContentPane().add(btnTestNetwork);
 	}
 }

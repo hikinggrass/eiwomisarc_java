@@ -17,31 +17,33 @@ public class NetworkServerThread extends Thread {
 	public NetworkServerThread(String name, Core core) throws IOException {
 		super(name);
 		this.core = core;
-		this.settings = core.getSettingsNetwork();
-		this.socket = new DatagramSocket(this.settings.getPort());
+		// this.settings = core.getSettingsNetwork();
+		this.socket = new DatagramSocket(1337);
 	}
 
 	public void run() {
 
 		while (this.run) {
 			try {
-				byte[] buf = new byte[6];
+				byte[] buf = new byte[100];
 
 				// receive request
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
 				socket.receive(packet);
-				Core.debugMessage("[netthread] --- packet received ---");
-				
-				if (this.settings.getHosts().contains(packet.getAddress())) { //TODO PERFORMANCE????
-					for (byte field : packet.getData()) {
-						Core.debugMessage(Integer.toHexString(0x000000ff & field).toUpperCase() + "h - "
-								+ Integer.toString(0x000000ff & field) + "d");
-					}
+				System.out.println("[netthread] --- packet received ---");
 
-					this.core.writeToSerialPort(packet.getData());
-				} else {
-					Core.debugMessage("[netthread] packet received from a host that is not in the acceptable range");
+				System.out.println("length:" + packet.getLength());
+				byte field;
+				byte[] buffer = packet.getData();
+				for (int i = 0; i < packet.getLength(); i++) {
+					field = buffer[i];
+					System.out.println(Integer.toHexString(0x000000ff & field).toUpperCase() + "h - "
+							+ Integer.toString(0x000000ff & field) + "d");
+
 				}
+
+				// this.core.writeToSerialPort(packet.getData());
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
