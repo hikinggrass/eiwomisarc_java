@@ -90,11 +90,11 @@ public class Serial {
 	 */
 	public boolean writeToSerialPort(byte[] buffer) {
 		if (this.ready) {
-			this.externWrite(buffer);
-			return true; // TODO
-		} else {
-			return false;
+			if (this.externWrite(buffer) == 0) {
+				return true;
+			}
 		}
+		return false;
 	}
 
 	/**
