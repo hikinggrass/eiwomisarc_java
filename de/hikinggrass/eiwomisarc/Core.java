@@ -150,7 +150,6 @@ public class Core {
 
 	public void startFireTimer(int time) {
 		fireTimer = new Timer();
-		// nach 1 Sek geht’s los und dann alle 5 Sekunden
 		fireTimer.schedule(new FireEffect(this), 0, time);
 	}
 
