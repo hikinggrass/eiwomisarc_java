@@ -6,18 +6,34 @@ public class StripeLED {
 	private byte r;
 	private byte g;
 	private byte b;
+	private boolean activated;
 
 	/**
 	 * @param stripe
 	 * @param lED
 	 */
-	public StripeLED(byte stripe, byte led, byte r, byte g, byte b) {
+	public StripeLED(byte stripe, byte led, byte r, byte g, byte b, boolean activated) {
 		super();
 		this.stripe = stripe;
 		this.led = led;
 		this.r = r;
 		this.g = g;
 		this.b = b;
+		this.activated = activated;
+	}
+
+	/**
+	 * @return the activated
+	 */
+	public boolean isActivated() {
+		return activated;
+	}
+
+	/**
+	 * @param activated the activated to set
+	 */
+	public void setActivated(boolean activated) {
+		this.activated = activated;
 	}
 
 	/**

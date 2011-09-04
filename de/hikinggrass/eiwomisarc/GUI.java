@@ -39,7 +39,7 @@ public class GUI {
 			core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()));
 			for (int i = 0; i < count * 5; i++) {
 				singleColorComboBox.addItem(new StripeLED((byte) ((i / 5) + 1), (byte) ((i % 5) + 1), (byte) 0,
-						(byte) 0, (byte) 0));
+						(byte) 0, (byte) 0,true));
 			}
 			singleColorComboBox.setEnabled(true);
 			sliderRSingle.setEnabled(true);
@@ -413,7 +413,7 @@ public class GUI {
 		sliderRSingle.setEnabled(false);
 		sliderRSingle.setValue(0);
 		sliderRSingle.setMaximum(127);
-		sliderRSingle.setBounds(146, 361, 190, 29);
+		sliderRSingle.setBounds(28, 361, 190, 29);
 		sliderRSingle.addMouseListener(new MouseListener() {
 
 			@Override
@@ -452,7 +452,7 @@ public class GUI {
 		sliderGSingle.setEnabled(false);
 		sliderGSingle.setValue(0);
 		sliderGSingle.setMaximum(127);
-		sliderGSingle.setBounds(146, 402, 190, 29);
+		sliderGSingle.setBounds(28, 402, 190, 29);
 		sliderGSingle.addMouseListener(new MouseListener() {
 
 			@Override
@@ -491,7 +491,7 @@ public class GUI {
 		sliderBSingle.setEnabled(false);
 		sliderBSingle.setValue(0);
 		sliderBSingle.setMaximum(127);
-		sliderBSingle.setBounds(146, 443, 190, 29);
+		sliderBSingle.setBounds(28, 443, 190, 29);
 		sliderBSingle.addMouseListener(new MouseListener() {
 
 			@Override
@@ -527,15 +527,15 @@ public class GUI {
 		frame.getContentPane().add(sliderBSingle);
 
 		JLabel label = new JLabel("R");
-		label.setBounds(136, 366, 15, 16);
+		label.setBounds(18, 366, 15, 16);
 		frame.getContentPane().add(label);
 
 		JLabel label_1 = new JLabel("G");
-		label_1.setBounds(136, 402, 15, 16);
+		label_1.setBounds(18, 402, 15, 16);
 		frame.getContentPane().add(label_1);
 
 		JLabel label_2 = new JLabel("B");
-		label_2.setBounds(136, 441, 15, 16);
+		label_2.setBounds(18, 441, 15, 16);
 		frame.getContentPane().add(label_2);
 
 		btnFading = new JButton("Farb\u00FCberg\u00E4nge ausschalten");
@@ -545,7 +545,7 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				fading();
+				deactivateFading();
 			}
 		});
 		frame.getContentPane().add(btnFading);
@@ -605,5 +605,9 @@ public class GUI {
 			}
 		});
 		frame.getContentPane().add(btnDemoModus);
+		
+		JButton btnNewButton = new JButton("LED deaktivieren");
+		btnNewButton.setBounds(230, 361, 149, 29);
+		frame.getContentPane().add(btnNewButton);
 	}
 }
