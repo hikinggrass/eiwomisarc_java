@@ -19,6 +19,9 @@ public class Core {
 	private static final int DEBUG = 2;
 	private static int messageLevel;
 
+	private static boolean networkServerMode;
+	private static boolean networkClientMode;
+
 	private NetworkServer networkServer;
 	private NetworkClient networkClient;
 	private Serial serialPort;
@@ -34,23 +37,34 @@ public class Core {
 		this.setup();
 	}
 
-	public Core(String serialPort, int baudRate) {
-		this.networkServer = new NetworkServer(this);
-		try {
-			this.networkClient = new NetworkClient("127.0.0.1", 1337);
-		} catch (UnknownHostException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (SocketException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+	public Core(String serialPort, int baudRate, boolean networkServerMode) {
+		this.networkServerMode = networkServerMode;
+		this.networkClientMode = false;
+		if (networkServerMode) {
+			this.networkServer = new NetworkServer(this); // todo port
 		}
+
 		try {
 			this.serialPort = new Serial(serialPort, baudRate);
 			System.out.println("connect to serial port");
 			this.fireTimer = new Timer();
 		} catch (IOException e) {
 			System.out.println("could not connect to serial port");
+		}
+	}
+
+	public Core(String serverAddress, int serverPort) {
+		try {
+			this.networkClient = new NetworkClient(serverAddress, serverPort);
+			this.networkClientMode = true;
+			this.networkServerMode = false;
+			this.networkServer = null;
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 
@@ -139,6 +153,14 @@ public class Core {
 		Core.debugMessage("[core] OS: " + System.getProperty("os.name"));
 	}
 
+	public boolean write(byte[] buffer) {
+		if (networkClientMode) {
+			return this.writeToNetwork(buffer);
+		} else {
+			return this.writeToSerialPort(buffer);
+		}
+	}
+
 	/**
 	 * Writes the given buffer to the serial port
 	 * 
@@ -146,9 +168,17 @@ public class Core {
 	 *            the buffer to be written to the serial port
 	 * @return true if the write was successful, false if not
 	 */
-	public boolean writeToSerialPort(byte[] buffer) {
+	private boolean writeToSerialPort(byte[] buffer) {
 		if (this.serialPort != null) {
 			return this.serialPort.writeToSerialPort(buffer);
+		} else {
+			return false;
+		}
+	}
+
+	private boolean writeToNetwork(byte[] buffer) {
+		if (this.networkClient != null) {
+			return this.networkClient.sendPacket(buffer);
 		} else {
 			return false;
 		}
@@ -172,5 +202,12 @@ public class Core {
 
 	public void sendPacket(byte[] buffer) {
 		this.networkClient.sendPacket(buffer);
+	}
+	
+	
+	public void stopServer() {
+		if(this.networkServer != null) {
+			networkServer.stopServerThreads();
+		}
 	}
 }

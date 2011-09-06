@@ -26,7 +26,7 @@ public class FireEffect extends TimerTask {
 		byte[] buffer = { 0x01, (byte) r, (byte) g, b };
 
 		if (core != null) {
-			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+			core.write(new KaiLED(buffer).getBuffer());
 		}
 	}
 }

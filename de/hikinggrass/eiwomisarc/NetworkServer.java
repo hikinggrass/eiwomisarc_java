@@ -11,16 +11,25 @@ import java.io.IOException;
  */
 public class NetworkServer {
 	private Core core;
+	
+	private NetworkServerThread networkServerThread;
 
 	public NetworkServer(Core core) {
 		this.core = core;
+		System.out.println("new server started");
 		try {
-			new NetworkServerThread(this.core).start();
+			networkServerThread = new NetworkServerThread(this.core);
+			networkServerThread.start();
 			// Core.debugMessage("[net] Listening on port" + core.getSettingsNetwork().getPort());
 		} catch (IOException e) {
 			// Core.errorMessage("[net] Coudn't listen on port " + core.getSettingsNetwork().getPort() + ": "
 			// + e.getMessage());
 		}
+	}
+	
+	public void stopServerThreads() {
+		if(this.networkServerThread != null)
+		this.networkServerThread.stopServer(); //TODO
 	}
 
 }

@@ -25,12 +25,14 @@ public class NetworkClient {
 		this.socket = new DatagramSocket();
 	}
 
-	public void sendPacket(byte[] buffer) {
+	public boolean sendPacket(byte[] buffer) {
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, port);
 		try {
 			socket.send(packet);
+			return true;
 		} catch (IOException e) {
 			System.out.println("could not send packet");
+			return false;
 		}
 	}
 }

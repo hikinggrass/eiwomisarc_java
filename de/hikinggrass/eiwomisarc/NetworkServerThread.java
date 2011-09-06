@@ -16,6 +16,7 @@ public class NetworkServerThread extends Thread {
 
 	public NetworkServerThread(String name, Core core) throws IOException {
 		super(name);
+		System.out.println("new network server thread");
 		this.core = core;
 		// this.settings = core.getSettingsNetwork();
 		this.socket = new DatagramSocket(1337);
@@ -35,20 +36,33 @@ public class NetworkServerThread extends Thread {
 				System.out.println("length:" + packet.getLength());
 				byte field;
 				byte[] buffer = packet.getData();
+				byte[] writebuffer = new byte[packet.getLength()];
 				for (int i = 0; i < packet.getLength(); i++) {
 					field = buffer[i];
+					writebuffer[i] = buffer[i];
 					System.out.println(Integer.toHexString(0x000000ff & field).toUpperCase() + "h - "
 							+ Integer.toString(0x000000ff & field) + "d");
 
 				}
 
-				// this.core.writeToSerialPort(packet.getData());
+				this.core.write(writebuffer);
 
+			} catch (SocketException e) {
+				System.out.println("socket exception meh");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		socket.close();
+		if (!socket.isClosed()) {
+			socket.close();
+		}
+	}
+
+	public void stopServer() {
+		if (!socket.isClosed()) {
+			this.socket.close();
+		}
+		this.run = false;
 	}
 
 }

@@ -15,6 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
+import javax.swing.JCheckBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class GUI {
 
@@ -23,6 +25,8 @@ public class GUI {
 	private static Core core;
 	private static JTextField textSerial;
 	private static JTextField textBaud;
+	private static JLabel lblSerialServer;
+	private static JLabel lblBaudratePort;
 	private static JSlider sliderR;
 	private static JSlider sliderG;
 	private static JSlider sliderB;
@@ -43,18 +47,51 @@ public class GUI {
 	private static boolean stroboEnabled;
 	private static JButton btnHighPower;
 	private static boolean highPowerEnabled;
+	private static JTextField textServerAddress;
+	private static JTextField textPort;
+	private static JComboBox networkComboBox;
+	private static JCheckBox chckbxNetzwerkmodus;
 
 	private static void init() {
 		byte count = (byte) Integer.parseInt(textNumberOfLEDStripes.getText());
 
 		if (core != null) {
 			core.closeSerialPort();
+			core.stopServer();
 			if (singleColorComboBox != null) {
 				singleColorComboBox.removeAllItems();
 			}
 		}
-
-		core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()));
+		if (chckbxNetzwerkmodus.isSelected()) {
+			if (networkComboBox.getSelectedItem().equals("Client")) {
+				core = new Core(textServerAddress.getText(), Integer.parseInt(textPort.getText()));
+				lblBaudratePort.setText("Port");
+				lblSerialServer.setText("Serveradresse");
+				textBaud.setVisible(false);
+				textSerial.setVisible(false);
+				textPort.setVisible(true);
+				textServerAddress.setVisible(true);
+				System.out.println("client");
+			} else {
+				core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()), true);
+				lblBaudratePort.setText("Baudrate");
+				lblSerialServer.setText("Serial Port");
+				textBaud.setVisible(true);
+				textSerial.setVisible(true);
+				textPort.setVisible(false);
+				textServerAddress.setVisible(false);
+				System.out.println("server");
+			}
+		} else {
+			core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()), false);
+			lblBaudratePort.setText("Baudrate");
+			lblSerialServer.setText("Serial Port");
+			textBaud.setVisible(true);
+			textSerial.setVisible(true);
+			textPort.setVisible(false);
+			textServerAddress.setVisible(false);
+			System.out.println("network mode disabled");
+		}
 		for (int i = 0; i < count * 5; i++) {
 			singleColorComboBox.addItem(new StripeLED((byte) ((i / 5) + 1), (byte) ((i % 5) + 1), (byte) 0, (byte) 0,
 					(byte) 0, true));
@@ -68,14 +105,51 @@ public class GUI {
 
 		byte[] buffer = { 0x00, count };
 
-		core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+		core.write(new KaiLED(buffer).getBuffer());
+	}
+
+	private static void networkStateChange() {
+		if (core != null) {
+			core.closeSerialPort();
+			core.stopServer();
+		}
+		if (chckbxNetzwerkmodus.isSelected()) {
+			if (networkComboBox.getSelectedItem().equals("Client")) {
+				lblBaudratePort.setText("Port");
+				lblSerialServer.setText("Serveradresse");
+				textBaud.setVisible(false);
+				textSerial.setVisible(false);
+				textPort.setVisible(true);
+				textServerAddress.setVisible(true);
+				System.out.println("client");
+			} else {
+				core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()), true);
+				lblBaudratePort.setText("Baudrate");
+				lblSerialServer.setText("Serial Port");
+				textBaud.setVisible(true);
+				textSerial.setVisible(true);
+				textPort.setVisible(false);
+				textServerAddress.setVisible(false);
+				System.out.println("server");
+			}
+		} else {
+			core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()), false);
+			lblBaudratePort.setText("Baudrate");
+			lblSerialServer.setText("Serial Port");
+			textBaud.setVisible(true);
+			textSerial.setVisible(true);
+			textPort.setVisible(false);
+			textServerAddress.setVisible(false);
+			System.out.println("network mode disabled");
+		}
+
 	}
 
 	private static void demo() {
 		byte[] buffer = { (byte) 0xff };
 
 		if (core != null) {
-			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+			core.write(new KaiLED(buffer).getBuffer());
 		}
 	}
 
@@ -85,7 +159,7 @@ public class GUI {
 		byte[] buffer = { 0x03, speed };
 
 		if (core != null) {
-			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+			core.write(new KaiLED(buffer).getBuffer());
 		}
 	}
 
@@ -94,7 +168,7 @@ public class GUI {
 		byte[] buffer = { 0x13 };
 
 		if (core != null) {
-			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+			core.write(new KaiLED(buffer).getBuffer());
 		}
 	}
 
@@ -106,7 +180,7 @@ public class GUI {
 		byte[] buffer = { 0x01, r, g, b };
 
 		if (core != null) {
-			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+			core.write(new KaiLED(buffer).getBuffer());
 		}
 	}
 
@@ -152,7 +226,7 @@ public class GUI {
 				buffer[i + 1] = (byte) Integer.parseInt(states[i], 2);
 			}
 			if (core != null) {
-				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+				core.write(new KaiLED(buffer).getBuffer());
 			}
 		}
 
@@ -185,7 +259,7 @@ public class GUI {
 		}
 
 		if (core != null) {
-			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+			core.write(new KaiLED(buffer).getBuffer());
 		}
 	}
 
@@ -196,14 +270,14 @@ public class GUI {
 		byte[] buffer = { 0x02, s };
 
 		if (core != null) {
-			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+			core.write(new KaiLED(buffer).getBuffer());
 		}
 	}
 
 	private static void deactivateLEDSequencer() {
 		byte[] buffer = { 0x12 };
 		if (core != null) {
-			core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+			core.write(new KaiLED(buffer).getBuffer());
 		}
 	}
 
@@ -225,7 +299,7 @@ public class GUI {
 		if (core != null) {
 			if (stroboEnabled) {
 				byte[] buffer = { 0x16 };
-				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+				core.write(new KaiLED(buffer).getBuffer());
 
 				btnStrobo.setText("Strobo aktivieren");
 				stroboEnabled = false;
@@ -233,7 +307,7 @@ public class GUI {
 				byte duration = (byte) Integer.parseInt(textStroboDuration.getText());
 				byte delay = (byte) Integer.parseInt(textStroboDelay.getText());
 				byte[] buffer = { 0x06, duration, delay };
-				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+				core.write(new KaiLED(buffer).getBuffer());
 
 				btnStrobo.setText("Strobo deaktivieren");
 				stroboEnabled = true;
@@ -245,13 +319,13 @@ public class GUI {
 		if (core != null) {
 			if (highPowerEnabled) {
 				byte[] buffer = { (byte) 0xfe };
-				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+				core.write(new KaiLED(buffer).getBuffer());
 
 				btnHighPower.setText("High Power Modus aktivieren");
 				highPowerEnabled = false;
 			} else {
 				byte[] buffer = { (byte) 0xfd };
-				core.writeToSerialPort(new KaiLED(buffer).getBuffer());
+				core.write(new KaiLED(buffer).getBuffer());
 
 				btnHighPower.setText("High Power Modus deaktivieren");
 				highPowerEnabled = true;
@@ -486,13 +560,13 @@ public class GUI {
 		frame.getContentPane().add(textBaud);
 		textBaud.setColumns(10);
 
-		JLabel lblNewLabel = new JLabel("Serial Port");
-		lblNewLabel.setBounds(174, 8, 77, 16);
-		frame.getContentPane().add(lblNewLabel);
+		lblSerialServer = new JLabel("Serial Port");
+		lblSerialServer.setBounds(153, 8, 110, 16);
+		frame.getContentPane().add(lblSerialServer);
 
-		JLabel lblBaudrate = new JLabel("Baudrate");
-		lblBaudrate.setBounds(275, 8, 61, 16);
-		frame.getContentPane().add(lblBaudrate);
+		lblBaudratePort = new JLabel("Baudrate");
+		lblBaudratePort.setBounds(275, 8, 61, 16);
+		frame.getContentPane().add(lblBaudratePort);
 
 		textNumberOfLEDStripes = new JTextField();
 		textNumberOfLEDStripes.setText("1");
@@ -816,7 +890,44 @@ public class GUI {
 				core.sendPacket(new KaiLED(buffer).getBuffer());
 			}
 		});
-		btnTestNetwork.setBounds(249, 65, 117, 29);
+		btnTestNetwork.setBounds(327, 136, 117, 29);
 		frame.getContentPane().add(btnTestNetwork);
+
+		chckbxNetzwerkmodus = new JCheckBox("Netzwerkmodus");
+		chckbxNetzwerkmodus.setBounds(232, 66, 134, 23);
+		chckbxNetzwerkmodus.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				networkStateChange();
+			}
+		});
+		frame.getContentPane().add(chckbxNetzwerkmodus);
+
+		networkComboBox = new JComboBox();
+		networkComboBox.setModel(new DefaultComboBoxModel(new String[] { "Server", "Client" }));
+		networkComboBox.setBounds(379, 66, 95, 27);
+		networkComboBox.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				// TODO Auto-generated method stub
+				networkStateChange();
+			}
+		});
+		frame.getContentPane().add(networkComboBox);
+
+		textServerAddress = new JTextField("localhost");
+		textServerAddress.setColumns(10);
+		textServerAddress.setBounds(153, 36, 110, 28);
+		textServerAddress.setVisible(false);
+		frame.getContentPane().add(textServerAddress);
+
+		textPort = new JTextField("1337");
+		textPort.setColumns(10);
+		textPort.setBounds(275, 36, 61, 28);
+		textPort.setVisible(false);
+		frame.getContentPane().add(textPort);
 	}
 }
