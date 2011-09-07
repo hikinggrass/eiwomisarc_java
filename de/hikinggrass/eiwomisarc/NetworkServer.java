@@ -11,12 +11,12 @@ import java.io.IOException;
  */
 public class NetworkServer {
 	private Core core;
-	
+
 	private NetworkServerThread networkServerThread;
 
 	public NetworkServer(Core core) {
 		this.core = core;
-		System.out.println("new server started");
+		Core.debugMessage("[network server] new server started");
 		try {
 			networkServerThread = new NetworkServerThread(this.core);
 			networkServerThread.start();
@@ -26,10 +26,11 @@ public class NetworkServer {
 			// + e.getMessage());
 		}
 	}
-	
+
 	public void stopServerThreads() {
-		if(this.networkServerThread != null)
-		this.networkServerThread.stopServer(); //TODO
+		if (this.networkServerThread != null) {
+			this.networkServerThread.stopServer();
+		}
 	}
 
 }

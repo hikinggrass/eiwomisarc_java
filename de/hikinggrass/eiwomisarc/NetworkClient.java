@@ -31,7 +31,7 @@ public class NetworkClient {
 			socket.send(packet);
 			return true;
 		} catch (IOException e) {
-			System.out.println("could not send packet");
+			Core.errorMessage("[network client] could not send packet");
 			return false;
 		}
 	}

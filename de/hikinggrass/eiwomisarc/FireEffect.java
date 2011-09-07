@@ -21,7 +21,7 @@ public class FireEffect extends TimerTask {
 		int g = randomGenerator.nextInt(r);
 		g = (g / 6);
 		byte b = 0x00;
-		System.out.println("R" + r + " G" + g);
+		Core.debugMessage("[fire effect] R" + r + " G" + g);
 
 		byte[] buffer = { 0x01, (byte) r, (byte) g, b };
 

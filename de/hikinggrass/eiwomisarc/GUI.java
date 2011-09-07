@@ -71,7 +71,7 @@ public class GUI {
 				textSerial.setVisible(false);
 				textPort.setVisible(true);
 				textServerAddress.setVisible(true);
-				System.out.println("client");
+				Core.debugMessage("[gui] client mode");
 			} else {
 				core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()), true);
 				lblBaudratePort.setText("Baudrate");
@@ -80,7 +80,7 @@ public class GUI {
 				textSerial.setVisible(true);
 				textPort.setVisible(false);
 				textServerAddress.setVisible(false);
-				System.out.println("server");
+				Core.debugMessage("[gui] server mode");
 			}
 		} else {
 			core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()), false);
@@ -90,7 +90,7 @@ public class GUI {
 			textSerial.setVisible(true);
 			textPort.setVisible(false);
 			textServerAddress.setVisible(false);
-			System.out.println("network mode disabled");
+			Core.debugMessage("[gui] network mode disabled");
 		}
 		for (int i = 0; i < count * 5; i++) {
 			singleColorComboBox.addItem(new StripeLED((byte) ((i / 5) + 1), (byte) ((i % 5) + 1), (byte) 0, (byte) 0,
@@ -121,7 +121,7 @@ public class GUI {
 				textSerial.setVisible(false);
 				textPort.setVisible(true);
 				textServerAddress.setVisible(true);
-				System.out.println("client");
+				Core.debugMessage("[gui] client mode");
 			} else {
 				core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()), true);
 				lblBaudratePort.setText("Baudrate");
@@ -130,7 +130,7 @@ public class GUI {
 				textSerial.setVisible(true);
 				textPort.setVisible(false);
 				textServerAddress.setVisible(false);
-				System.out.println("server");
+				Core.debugMessage("[gui] server mode");
 			}
 		} else {
 			core = new Core(textSerial.getText(), Integer.parseInt(textBaud.getText()), false);
@@ -140,7 +140,7 @@ public class GUI {
 			textSerial.setVisible(true);
 			textPort.setVisible(false);
 			textServerAddress.setVisible(false);
-			System.out.println("network mode disabled");
+			Core.debugMessage("[gui] network mode disabled");
 		}
 
 	}

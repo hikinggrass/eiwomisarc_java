@@ -20,16 +20,16 @@ public class Serial {
 	 * Currently supported: Linux, Mac OS X and Windows
 	 */
 	static {
-		System.out.println("OS: " + System.getProperty("os.name"));
+		Core.debugMessage("[serial] OS: " + System.getProperty("os.name"));
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			System.loadLibrary("eiwomisarc_serialOSX");
-			System.out.println("[serial] Loaded eiwomisarc_serialOSX serial port library");
+			Core.debugMessage("[serial] loaded eiwomisarc_serialOSX serial port library");
 		} else if (System.getProperty("os.name").toLowerCase().equals("linux")) {
 			System.loadLibrary("eiwomisarc_serialLinux");
-			System.out.println("loaded linux lib");
+			Core.debugMessage("[serial] loaded linux lib");
 		} else if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
 			System.loadLibrary("eiwomisarc_serialWindows");
-			System.out.println("loaded windows lib");
+			Core.debugMessage("[serial] loaded windows lib");
 		}
 	}
 
@@ -57,8 +57,7 @@ public class Serial {
 		if (this.externOpenPort(serialPort, baudRate) == -1) {
 			throw new IOException("[serial] Serial port " + serialPort + " could not be opened");
 		} else {
-			System.out
-					.println("[serial] Serial port " + serialPort + " successfully opened with baud rate " + baudRate);
+			Core.debugMessage("[serial] Serial port " + serialPort + " successfully opened with baud rate " + baudRate);
 			this.ready = true;
 		}
 	}

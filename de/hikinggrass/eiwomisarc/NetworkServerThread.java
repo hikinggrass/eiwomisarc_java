@@ -16,7 +16,7 @@ public class NetworkServerThread extends Thread {
 
 	public NetworkServerThread(String name, Core core) throws IOException {
 		super(name);
-		System.out.println("new network server thread");
+		Core.debugMessage("[netthread] new network server thread");
 		this.core = core;
 		// this.settings = core.getSettingsNetwork();
 		this.socket = new DatagramSocket(1337);
@@ -31,16 +31,16 @@ public class NetworkServerThread extends Thread {
 				// receive request
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
 				socket.receive(packet);
-				System.out.println("[netthread] --- packet received ---");
+				Core.debugMessage("[netthread] --- packet received ---");
 
-				System.out.println("length:" + packet.getLength());
+				Core.debugMessage("[netthread] packet length:" + packet.getLength());
 				byte field;
 				byte[] buffer = packet.getData();
 				byte[] writebuffer = new byte[packet.getLength()];
 				for (int i = 0; i < packet.getLength(); i++) {
 					field = buffer[i];
 					writebuffer[i] = buffer[i];
-					System.out.println(Integer.toHexString(0x000000ff & field).toUpperCase() + "h - "
+					Core.debugMessage("[netthread] " + Integer.toHexString(0x000000ff & field).toUpperCase() + "h - "
 							+ Integer.toString(0x000000ff & field) + "d");
 
 				}
@@ -48,7 +48,7 @@ public class NetworkServerThread extends Thread {
 				this.core.write(writebuffer);
 
 			} catch (SocketException e) {
-				System.out.println("socket exception meh");
+				Core.errorMessage("[netthread] socket exception");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

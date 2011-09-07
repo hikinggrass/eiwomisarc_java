@@ -38,6 +38,8 @@ public class Core {
 	}
 
 	public Core(String serialPort, int baudRate, boolean networkServerMode) {
+		Core.setMessageLevel(DEBUG);
+
 		this.networkServerMode = networkServerMode;
 		this.networkClientMode = false;
 		if (networkServerMode) {
@@ -46,14 +48,16 @@ public class Core {
 
 		try {
 			this.serialPort = new Serial(serialPort, baudRate);
-			System.out.println("connect to serial port");
+			Core.debugMessage("[core] connected to serial port");
 			this.fireTimer = new Timer();
 		} catch (IOException e) {
-			System.out.println("could not connect to serial port");
+			Core.debugMessage("[core] could not connect to serial port");
 		}
 	}
 
 	public Core(String serverAddress, int serverPort) {
+		Core.setMessageLevel(DEBUG);
+
 		try {
 			this.networkClient = new NetworkClient(serverAddress, serverPort);
 			this.networkClientMode = true;
@@ -187,7 +191,7 @@ public class Core {
 	public void closeSerialPort() {
 		if (this.serialPort != null) {
 			this.serialPort.closeSerialPort();
-			System.out.println("[serial] Serial port " + serialPort.getSerialPort() + " successfully closed");
+			Core.debugMessage("[serial] Serial port " + serialPort.getSerialPort() + " successfully closed");
 		}
 	}
 
@@ -203,10 +207,9 @@ public class Core {
 	public void sendPacket(byte[] buffer) {
 		this.networkClient.sendPacket(buffer);
 	}
-	
-	
+
 	public void stopServer() {
-		if(this.networkServer != null) {
+		if (this.networkServer != null) {
 			networkServer.stopServerThreads();
 		}
 	}
