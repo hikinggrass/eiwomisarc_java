@@ -26,7 +26,7 @@ public class NetworkServerThread extends Thread {
 
 		while (this.run) {
 			try {
-				byte[] buf = new byte[100];
+				byte[] buf = new byte[1000];
 
 				// receive request
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
