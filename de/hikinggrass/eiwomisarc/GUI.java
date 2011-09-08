@@ -95,7 +95,7 @@ public class GUI {
 			Core.debugMessage("[gui] network mode disabled");
 		}
 		for (int i = 0; i < count * 5; i++) {
-			singleColorComboBox.addItem(new StripeLED((byte) ((i / 5) + 1), (byte) ((i % 5) + 1), (byte) 0, (byte) 0,
+			singleColorComboBox.addItem(new StripeLED((byte) ((i / 5) + 1), (byte) (5 - (i % 5)), (byte) 0, (byte) 0,
 					(byte) 0, true));
 		}
 		singleColorComboBox.setEnabled(true);
@@ -770,7 +770,7 @@ public class GUI {
 
 		sliderFading = new JSlider();
 		sliderFading.setMinimum(1);
-		sliderFading.setValue(0);
+		sliderFading.setValue(1);
 		sliderFading.setMaximum(255);
 		sliderFading.setEnabled(false);
 		sliderFading.setBounds(225, 320, 190, 29);
@@ -896,17 +896,6 @@ public class GUI {
 		});
 		btnHighPower.setBounds(6, 65, 226, 29);
 		frame.getContentPane().add(btnHighPower);
-
-		JButton btnTestNetwork = new JButton("Test Network");
-		btnTestNetwork.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				byte[] buffer = { 0x00, 9 };
-
-				core.sendPacket(new KaiLED(buffer).getBuffer());
-			}
-		});
-		btnTestNetwork.setBounds(327, 136, 117, 29);
-		frame.getContentPane().add(btnTestNetwork);
 
 		chckbxNetzwerkmodus = new JCheckBox("Netzwerkmodus");
 		chckbxNetzwerkmodus.setBounds(232, 66, 134, 23);
