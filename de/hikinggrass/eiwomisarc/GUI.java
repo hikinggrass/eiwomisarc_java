@@ -17,6 +17,8 @@ import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class GUI {
 
@@ -341,6 +343,19 @@ public class GUI {
 		fireEffectEnabled = false;
 		stroboEnabled = false;
 		highPowerEnabled = false;
+		
+		// Get the native look and feel class name
+		String nativeLF = UIManager.getSystemLookAndFeelClassName();
+
+		// Install the look and feel
+		try {
+		    UIManager.setLookAndFeel(nativeLF);
+		} catch (InstantiationException e) {
+		} catch (ClassNotFoundException e) {
+		} catch (UnsupportedLookAndFeelException e) {
+		} catch (IllegalAccessException e) {
+		}
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
