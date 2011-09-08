@@ -19,8 +19,8 @@ public class Core {
 	private static final int DEBUG = 2;
 	private static int messageLevel;
 
-	private static boolean networkServerMode;
-	private static boolean networkClientMode;
+	private boolean networkServerMode;
+	private boolean networkClientMode;
 
 	private NetworkServer networkServer;
 	private NetworkClient networkClient;
